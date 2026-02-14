@@ -1,5 +1,7 @@
 package com.jifelog.gateway.filter
 
+import com.jifelog.gateway.jwt.JwtGenerator
+import com.jifelog.gateway.session.SessionIdResolver
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
 import org.springframework.http.HttpStatus
@@ -8,45 +10,44 @@ import org.springframework.session.Session
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
-import java.util.Base64
 
 @Component
 class SessionToJwtGlobalFilter(
-    private val sessionRepository: ReactiveSessionRepository<out Session>
+    private val sessionRepository: ReactiveSessionRepository<out Session>,
+    private val sessionIdResolver: SessionIdResolver,
+    private val jwtGenerator: JwtGenerator,
 ) : GlobalFilter {
-    private val sessionCookieName = "SESSION"
 
-    override fun filter(
-        exchange: ServerWebExchange,
-        chain: GatewayFilterChain
-    ): Mono<Void> {
-        if (shouldSkip(exchange)) {
-            return chain.filter(exchange)
+    override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
+        // 내부 JWT 헤더 제거(클라이언트 주입 방지)
+        val sanitizedExchange = exchange.mutate()
+            .request(
+                exchange.request.mutate()
+                    .headers { it.remove(jwtGenerator.headerName()) }
+                    .build()
+            )
+            .build()
+
+        if (shouldSkip(sanitizedExchange)) {
+            return chain.filter(sanitizedExchange)
         }
 
-        val cookieSessionId = extractSessionId(exchange) ?: return unauthorized(exchange)
-        val sessionId = String(Base64.getUrlDecoder().decode(cookieSessionId), Charsets.UTF_8)
+        val sessionId = sessionIdResolver.resolve(sanitizedExchange) ?: return unauthorized(sanitizedExchange)
 
-        sessionRepository.findById(sessionId)
-            .doOnNext { session ->
-                println("SESSION ID: ${session.id}")
-                session.attributeNames.forEach { key ->
-                    val value = session.getAttribute<Any>(key)
-                    println(" - $key = $value")
-                }
-            }
-            .doOnSuccess {
-                if (it == null) {
-                    println("SESSION NOT FOUND")
-                }
-            }
-            .subscribe()
+        return sessionRepository.findById(sessionId)
+            .flatMap { session ->
+                val internalJwt = jwtGenerator.generate(session)
 
-        return chain.filter(exchange)
+                val requestWithJwt = sanitizedExchange.request.mutate()
+                    .headers { it.set(jwtGenerator.headerName(), internalJwt) }
+                    .build()
+
+                chain.filter(
+                    sanitizedExchange.mutate().request(requestWithJwt).build()
+                )
+            }
+            //.switchIfEmpty(unauthorized(sanitizedExchange))
     }
-
-    private fun extractSessionId(exchange: ServerWebExchange): String? =
-        exchange.request.cookies[sessionCookieName]?.firstOrNull()?.value
 
     private fun unauthorized(exchange: ServerWebExchange): Mono<Void> {
         exchange.response.statusCode = HttpStatus.UNAUTHORIZED
