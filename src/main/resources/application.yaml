@@ -12,3 +12,11 @@ spring:
                 - Path=/auth/**
               filters:
                 - StripPrefix=1
+
+jifelog:
+  jwt:
+    secret: ${GATEWAY_JWT_SECRET}
+    issuer: jifelog-gateway
+    audience: jifelog-internal-services
+    header-name: X-Jifelog-JWT
+    ttl-seconds: 60
