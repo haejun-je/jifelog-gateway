@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: jifelog-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-api
+              uri: http://auth-service.default.svc.cluster.local:8080
+              predicates:
+                - Path=/auth/**
+              filters:
+                - StripPrefix=1
