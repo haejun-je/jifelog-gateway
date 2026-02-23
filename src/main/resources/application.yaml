@@ -27,3 +27,13 @@ jifelog:
     audience: jifelog-internal-services
     header-name: X-Jifelog-JWT
     ttl-seconds: 60
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health

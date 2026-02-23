@@ -28,6 +28,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webflux")
 	implementation("org.springframework.session:spring-session-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+	implementation ("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("com.auth0:java-jwt:4.5.0")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
