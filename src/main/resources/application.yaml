@@ -1,4 +1,7 @@
 spring:
+  config:
+    import:
+      - "classpath:application-secret.yaml"
   application:
     name: jifelog-gateway
   cloud:
@@ -7,15 +10,19 @@ spring:
         webflux:
           routes:
             - id: auth-api
-              uri: http://auth-service.default.svc.cluster.local:8080
+              uri: http://auth-api-${spring.profiles.active}.services-${spring.profiles.active}.svc.cluster.local:8080
               predicates:
                 - Path=/auth/**
               filters:
                 - StripPrefix=1
+  data:
+    redis:
+      host: ${secret.redis.host}
+      password: ${secret.redis.password}
 
 jifelog:
   jwt:
-    secret: ${GATEWAY_JWT_SECRET}
+    secret: ${secret.jwt.secret}
     issuer: jifelog-gateway
     audience: jifelog-internal-services
     header-name: X-Jifelog-JWT
