@@ -10,7 +10,7 @@ resources:
 images:
   - name: jifelog-gateway
     newName: jhjun07/jifelog-gateway
-    newTag: dev-f2405340aca45f7527d74cbd4f9e8b2c8992c668
+    newTag: dev-ad0c4aa9946e43f8d8d721aeba8e68a930fa098d
 
 patches:
   - path: patch-deployment.yaml
