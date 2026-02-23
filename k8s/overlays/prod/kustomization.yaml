@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: services-prod
+nameSuffix: -prod
+
+resources:
+  - ../../base
+
+images:
+  - name: jifelog-gateway
+    newName: jhjun07/jifelog-gateway
+    newTag: newTag
+
+patches:
+  - path: patch-deployment.yaml
+  - path: patch-ingress.yaml

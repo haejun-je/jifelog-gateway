@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway # Deployment를 식별하는 리소스 이름
+  labels:
+    app: gateway # Deployment에 붙는 라벨 (없어도 동작은 정상)
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway # Deployment가 어떤 Pod를 관리할지 지정하는 기준 (template의 labels 와 일치해야 한다)
+  template:
+    metadata:
+      labels:
+        app: gateway # 새로 만들어지는 Pod에 붙는 라벨 (Service가 이걸 보고 연결)
+    spec:
+      containers:
+        - name: gateway # Pod 내부에서 각 컨테이너의 이름 (단순 식별자)
+          image: jifelog-gateway
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 5
