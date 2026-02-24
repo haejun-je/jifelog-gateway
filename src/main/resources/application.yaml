@@ -10,7 +10,7 @@ spring:
         webflux:
           routes:
             - id: auth-api
-              uri: http://auth-api.${spring.profiles.active}.svc.cluster.local:8080
+              uri: http://auth-api.${spring.profiles.active}.svc.cluster.local
               predicates:
                 - Path=/auth/**
               filters:
