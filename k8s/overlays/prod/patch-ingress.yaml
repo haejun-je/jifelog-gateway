@@ -20,4 +20,4 @@ spec:
               service:
                 name: gateway-service
                 port:
-                  number: 8080
+                  number: 80
