@@ -30,7 +30,7 @@ jobs:
 
       - name: Build jar
         run: |
-          echo ${{secrets.SECRET_DATA}} | base64 --decode > ./src/main/resources/application-secret.yaml
+          echo ${{secrets.SECRET_DATA}} | base64 --decode > ./src/main/resources/secret-properties.yaml
           
           chmod +x ./gradlew
           ./gradlew clean build --no-daemon
