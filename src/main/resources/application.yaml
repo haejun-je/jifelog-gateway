@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-      - "classpath:application-secret.yaml"
+      - "classpath:secret-properties.yaml"
   application:
     name: jifelog-gateway
   cloud:
@@ -10,7 +10,7 @@ spring:
         webflux:
           routes:
             - id: auth-api
-              uri: http://auth-api.${spring.profiles.active}.svc.cluster.local
+              uri: http://auth-api.${spring.profiles.active}-jifelog-com.svc.cluster.local
               predicates:
                 - Path=/auth/**
               filters:
