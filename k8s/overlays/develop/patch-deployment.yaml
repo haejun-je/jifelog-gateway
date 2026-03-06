@@ -11,6 +11,10 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
+          volumeMounts:
+            - mountPath: /etc/secrets
+              name: secret
+              readOnly: true
           resources:
             requests:
               cpu: "100m"
@@ -18,3 +22,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+      volumes:
+        - name: secret
+          secret:
+            secretName: jifelog-secret

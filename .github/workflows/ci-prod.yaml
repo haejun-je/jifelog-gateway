@@ -30,9 +30,7 @@ jobs:
           cache: gradle
 
       - name: Build jar
-        run: |
-          echo ${{secrets.SECRET_DATASOURCE}} | base64 --decode > ./src/main/resources/secret-properties.yaml
-          
+        run: |          
           chmod +x ./gradlew
           ./gradlew clean build --no-daemon
           ls -al build/libs

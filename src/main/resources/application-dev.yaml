@@ -1,0 +1,3 @@
+jifelog:
+  jwt:
+    issuer: dev-gateway.jifelog.com

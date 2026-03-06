@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: jifelog-gateway
   cloud:
     gateway:
       server:
@@ -12,15 +10,3 @@ spring:
                 - Path=/auth/**
               filters:
                 - StripPrefix=1
-  data:
-    redis:
-      host: host
-      password: pwd
-
-jifelog:
-  jwt:
-    secret: ${GATEWAY_JWT_SECRET:local-dev-only-secret-change-me}
-    issuer: jifelog-gateway
-    audience: jifelog-internal-services
-    header-name: X-Jifelog-JWT
-    ttl-seconds: 60
