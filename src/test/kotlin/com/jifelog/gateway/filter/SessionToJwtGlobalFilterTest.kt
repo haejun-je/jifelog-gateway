@@ -71,6 +71,46 @@ class SessionToJwtGlobalFilterTest {
     }
 
     @Test
+    fun `allows signup root request without session`() {
+        val filter = SessionToJwtGlobalFilter(
+            sessionRepository = FakeSessionRepository(),
+            sessionIdResolver = SessionIdResolver(),
+            jwtGenerator = jwtGenerator,
+        )
+        var chainCalled = false
+        val exchange = MockServerWebExchange.from(
+            MockServerHttpRequest.post("/signup").build()
+        )
+
+        filter.filter(exchange) {
+            chainCalled = true
+            Mono.empty()
+        }.block()
+
+        assertTrue(chainCalled)
+    }
+
+    @Test
+    fun `allows signup child request without session`() {
+        val filter = SessionToJwtGlobalFilter(
+            sessionRepository = FakeSessionRepository(),
+            sessionIdResolver = SessionIdResolver(),
+            jwtGenerator = jwtGenerator,
+        )
+        var chainCalled = false
+        val exchange = MockServerWebExchange.from(
+            MockServerHttpRequest.get("/signup/email/verify").build()
+        )
+
+        filter.filter(exchange) {
+            chainCalled = true
+            Mono.empty()
+        }.block()
+
+        assertTrue(chainCalled)
+    }
+
+    @Test
     fun `returns unauthorized when session does not exist`() {
         val filter = SessionToJwtGlobalFilter(
             sessionRepository = FakeSessionRepository(),

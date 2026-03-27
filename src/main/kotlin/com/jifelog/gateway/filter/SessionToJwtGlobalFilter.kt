@@ -60,6 +60,8 @@ class SessionToJwtGlobalFilter(
         val method = exchange.request.method.name()
 
         return CorsUtils.isPreFlightRequest(exchange.request) ||
-            (method == "POST" && path == "/login")
+                (method == "POST" && path == "/login") ||
+                (method == "POST" && path == "/signup") ||
+                path.startsWith("/signup/")
     }
 }
