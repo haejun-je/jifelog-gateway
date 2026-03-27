@@ -1,3 +1,18 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          global-cors:
+            cors-configurations:
+              '[/**]':
+                allowed-origin-patterns: "http://*.jifelog.com"
+server:
+  reactive:
+    session:
+      cookie:
+        secure: false
+
 jifelog:
   jwt:
     issuer: dev-gateway.jifelog.com
