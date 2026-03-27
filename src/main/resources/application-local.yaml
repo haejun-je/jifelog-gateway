@@ -3,6 +3,21 @@ spring:
     gateway:
       server:
         webflux:
+          global-cors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowed-origin-patterns: "http://localhost:[*]"
+                allowed-methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowed-headers: "*"
+                allow-credentials: true
+                max-age: 3600
           routes:
             - id: auth-api
               uri: http://localhost:8081
@@ -10,3 +25,8 @@ spring:
                 - Path=/auth/**
               filters:
                 - StripPrefix=1
+server:
+  reactive:
+    session:
+      cookie:
+        secure: false

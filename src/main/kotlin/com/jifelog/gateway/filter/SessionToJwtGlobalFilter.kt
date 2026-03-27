@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.session.ReactiveSessionRepository
 import org.springframework.session.Session
 import org.springframework.stereotype.Component
+import org.springframework.web.cors.reactive.CorsUtils
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
@@ -46,7 +47,7 @@ class SessionToJwtGlobalFilter(
                     sanitizedExchange.mutate().request(requestWithJwt).build()
                 )
             }
-            //.switchIfEmpty(unauthorized(sanitizedExchange))
+            .switchIfEmpty(unauthorized(sanitizedExchange))
     }
 
     private fun unauthorized(exchange: ServerWebExchange): Mono<Void> {
@@ -58,6 +59,7 @@ class SessionToJwtGlobalFilter(
         val path = exchange.request.uri.path
         val method = exchange.request.method.name()
 
-        return method == "POST" && path == "/login"
+        return CorsUtils.isPreFlightRequest(exchange.request) ||
+            (method == "POST" && path == "/login")
     }
 }

@@ -5,6 +5,29 @@ spring:
     gateway:
       server:
         webflux:
+          default-filters:
+            - SecureHeaders
+          filter:
+            secure-headers:
+              strict-transport-security: max-age=31536000 ; includeSubDomains
+              referrer-policy: no-referrer
+              permissions-policy: camera=(), geolocation=(), microphone=()
+              xss-protection-header: "0"
+          global-cors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowed-origin-patterns: "https://*.jifelog.com"
+                allowed-methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowed-headers: "*"
+                allow-credentials: true
+                max-age: 3600
           routes:
             - id: auth-api
               uri: http://auth-api.${spring.profiles.active}-jifelog-com.svc.cluster.local
@@ -16,6 +39,14 @@ spring:
     redis:
       host: ${JIFELOG_REDIS_HOST}
       password: ${JIFELOG_REDIS_PASSWORD}
+
+server:
+  reactive:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: true
 
 jifelog:
   jwt:
