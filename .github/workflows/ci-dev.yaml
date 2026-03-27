@@ -61,7 +61,7 @@ jobs:
 
       - name: Update Kustomize image tag (develop overlay) and push commit
         run: |
-          FILE="k8s/overlays/develop/kustomization.yaml"
+          FILE="deploy/overlays/develop/kustomization.yaml"
           sed -i "0,/newTag:/s/newTag:.*/newTag: ${IMAGE_TAG}/" "$FILE"
 
           git config user.name "github-actions[bot]"
