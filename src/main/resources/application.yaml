@@ -18,7 +18,7 @@ spring:
             cors-configurations:
               '[/**]':
                 allowed-origin-patterns:
-                  - "https://*.jifelog.com"
+                  - "https://www.jifelog.com"
                   - "https://jifelog.com"
                 allowed-methods:
                   - GET
