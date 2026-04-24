@@ -9,7 +9,7 @@ spec:
   tls:
     - hosts:
         - gateway.jifelog.com
-      secretName: tls-secret-prod
+      secretName: gateway-tls-secret-prod
   rules:
     - host: gateway.jifelog.com
       http:
