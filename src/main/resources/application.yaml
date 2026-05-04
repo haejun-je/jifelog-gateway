@@ -42,13 +42,13 @@ spring:
       host: ${JIFELOG_REDIS_HOST}
       password: ${JIFELOG_REDIS_PASSWORD}
 
-server:
-  reactive:
-    session:
-      cookie:
-        http-only: true
-        same-site: lax
-        secure: true
+#server:
+#  reactive:
+#    session:
+#      cookie:
+#        http-only: true
+#        same-site: lax
+#        secure: true
 
 jifelog:
   jwt:

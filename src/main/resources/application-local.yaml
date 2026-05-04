@@ -25,8 +25,8 @@ spring:
                 - Path=/auth/**
               filters:
                 - StripPrefix=1
-server:
-  reactive:
-    session:
-      cookie:
-        secure: false
+#server:
+#  reactive:
+#    session:
+#      cookie:
+#        secure: false
