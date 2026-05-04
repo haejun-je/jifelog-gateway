@@ -33,7 +33,8 @@ class SessionToJwtGlobalFilter(
             return chain.filter(sanitizedExchange)
         }
 
-        val sessionId = sessionIdResolver.resolve(sanitizedExchange) ?: return unauthorized(sanitizedExchange)
+        val sessionId = sessionIdResolver.resolve(sanitizedExchange)
+            ?: return unauthorized(sanitizedExchange)
 
         return sessionRepository.findById(sessionId)
             .flatMap { session ->
@@ -45,14 +46,15 @@ class SessionToJwtGlobalFilter(
 
                 chain.filter(
                     sanitizedExchange.mutate().request(requestWithJwt).build()
-                )
+                ).thenReturn(true)
             }
-            .switchIfEmpty(unauthorized(sanitizedExchange))
+            .switchIfEmpty(unauthorized(sanitizedExchange).thenReturn(false))
+            .then()
     }
 
-    private fun unauthorized(exchange: ServerWebExchange): Mono<Void> {
+    private fun unauthorized(exchange: ServerWebExchange): Mono<Void> = Mono.defer {
         exchange.response.statusCode = HttpStatus.UNAUTHORIZED
-        return exchange.response.setComplete()
+        exchange.response.setComplete()
     }
 
     private fun shouldSkip(exchange: ServerWebExchange): Boolean {
