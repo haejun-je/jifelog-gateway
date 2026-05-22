@@ -39,6 +39,7 @@ class SessionToJwtGlobalFilter(
         return sessionRepository.findById(sessionId)
             .flatMap { session ->
                 val internalJwt = jwtGenerator.generate(session)
+                println("internalJwt = ${internalJwt}")
 
                 val requestWithJwt = sanitizedExchange.request.mutate()
                     .headers { it.set(jwtGenerator.headerName(), internalJwt) }
