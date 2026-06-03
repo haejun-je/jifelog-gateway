@@ -22,7 +22,7 @@ class JwtGenerator(
 
     fun generate(session: Session): String {
         val now = Date()
-        val expiresAt = Date(now.time + (props.ttlSeconds.coerceAtLeast(1) * 1000))
+        //val expiresAt = Date(now.time + (props.ttlSeconds.coerceAtLeast(1) * 1000))
 
         val jwtBuilder = JWT.create()
             .withIssuer(props.issuer)
@@ -30,15 +30,15 @@ class JwtGenerator(
             .withJWTId(UUID.randomUUID().toString())
             .withSubject(session.id)
             .withIssuedAt(now)
-            .withExpiresAt(expiresAt)
+            //.withExpiresAt(expiresAt)
 
         val userSession = session.getAttribute<LinkedHashMap<String, String>>(userSessionAttrName)
 
         userSession.forEach { (k, v) ->
             when (k) {
-                "id" -> jwtBuilder.withClaim("id", v)
+                "userId" -> jwtBuilder.withClaim("ui", v)
                 "username" -> { jwtBuilder.withClaim("un", v) }
-                "email" -> { jwtBuilder.withClaim("em", v) }
+                "nickname" -> { jwtBuilder.withClaim("nn", v) }
             }
         }
 
