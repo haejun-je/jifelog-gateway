@@ -65,8 +65,13 @@ class SessionToJwtGlobalFilter(
         exchange.response.setComplete()
     }
 
+    private val versionPrefix = Regex("^/v\\d+(/.*)")
+
+    private fun stripVersion(path: String): String =
+        versionPrefix.find(path)?.groupValues?.get(1) ?: path
+
     private fun shouldSkip(exchange: ServerWebExchange): Boolean {
-        val path = exchange.request.uri.path
+        val path = stripVersion(exchange.request.uri.path)
         val method = exchange.request.method.name()
 
         return CorsUtils.isPreFlightRequest(exchange.request) ||
