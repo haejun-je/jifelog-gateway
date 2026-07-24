@@ -6,7 +6,7 @@ spring:
           global-cors:
             cors-configurations:
               '[/**]':
-                allowed-origin-patterns: ["https://*.jifelog.com", "https://localhost:[*]"]
+                allowed-origin-patterns: ["https://*.jifelog.com", "https://localhost:[*]", "https://local.jifelog.com:[*]"]
 server:
   reactive:
     session:
