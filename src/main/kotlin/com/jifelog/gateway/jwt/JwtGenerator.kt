@@ -36,7 +36,7 @@ class JwtGenerator(
 
         userSession.forEach { (k, v) ->
             when (k) {
-                "userId" -> jwtBuilder.withClaim("ui", v)
+                "user_id" -> jwtBuilder.withClaim("ui", v)
                 "username" -> { jwtBuilder.withClaim("un", v) }
                 "nickname" -> { jwtBuilder.withClaim("nn", v) }
             }
